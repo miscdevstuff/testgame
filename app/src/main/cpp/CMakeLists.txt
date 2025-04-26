@@ -14,7 +14,7 @@ project("${APP_LIB_NAME}")
 # Include raylib, raymob and raylib-lua as a subdirectories
 add_subdirectory(${CMAKE_SOURCE_DIR}/deps/raylib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/deps/raymob)
-add_subdirectory(deps/lua)
+add_subdirectory(${CMAKE_SOURCE_DIR}/deps/lua)
 # Fetch all source files for your project (recursively), excluding 'deps' source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/*.c" "${CMAKE_SOURCE_DIR}/*.cpp")
 list(FILTER SOURCES EXCLUDE REGEX "${CMAKE_SOURCE_DIR}/deps/.*")
@@ -44,7 +44,7 @@ endif()
 # Include raylib and raymob header files
 target_include_directories(${APP_LIB_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/deps/raylib")
 target_include_directories(${APP_LIB_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/deps/raymob")
-target_include_directories(${APP_LIB_NAME} PRIVATE "deps/raylib-lua")
+target_include_directories(${APP_LIB_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/deps/lua")
 
 # Link required libraries to the native application
-target_link_libraries(${APP_LIB_NAME} raylib raymoblib raylib-lua)
+target_link_libraries(${APP_LIB_NAME} raylib raymoblib lua)

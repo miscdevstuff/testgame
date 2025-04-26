@@ -30,7 +30,7 @@ jobs:
               uses: android-actions/setup-android@v3
               with:
                   sdk-version: "34"
-                  ndk-version: "27.2.12479018" # NDK r27c
+                  ndk-version: "27.0.12077973" # NDK r27
 
             # Cache Gradle dependencies
             - name: Cache Gradle packages

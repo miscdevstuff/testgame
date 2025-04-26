@@ -38,7 +38,7 @@ android {
     namespace project.properties['app.application_id']
     compileSdk 34
     buildToolsVersion "34.0.0"
-    ndkVersion "27.2.12479018"
+    ndkVersion "27.0.12077973"
 
     defaultConfig {
         minSdk 29
