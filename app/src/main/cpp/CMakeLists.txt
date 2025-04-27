@@ -20,6 +20,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/deps/lua lua)
 set(SOURCES
     ${CMAKE_SOURCE_DIR}/main.c
     ${CMAKE_SOURCE_DIR}/raylua.c
+    ${CMAKE_SOURCE_DIR}/boot.c
+    ${CMAKE_SOURCE_DIR}/bind.c
 )
 
 # Fetch all source files for your project (recursively), excluding 'deps' source files

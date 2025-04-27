@@ -28,6 +28,30 @@ local rl_structs = {
   "rlRenderBatch"
 }
 
+-- Functions to exclude from binding (e.g., not available on Android)
+local excluded_functions = {
+  ["InitWindow"] = true,
+  ["CloseWindow"] = true,
+  ["WindowShouldClose"] = true,
+  ["IsWindowReady"] = true,
+  ["IsWindowFullscreen"] = true,
+  ["IsWindowHidden"] = true,
+  ["IsWindowMinimized"] = true,
+  ["IsWindowMaximized"] = true,
+  ["IsWindowFocused"] = true,
+  ["IsWindowResized"] = true,
+  ["IsWindowState"] = true,
+  ["SetWindowState"] = true,
+  ["ClearWindowState"] = true,
+  ["ToggleFullscreen"] = true,
+  ["ToggleBorderlessWindowed"] = true,
+  ["MaximizeWindow"] = true,
+  ["MinimizeWindow"] = true,
+  ["RestoreWindow"] = true,
+  ["SetWindowIcon"] = true,
+  -- Add more functions here as you encounter additional errors
+}
+
 local functions = {}
 local proto = {}
 
@@ -81,8 +105,7 @@ for _,modname in ipairs(modules) do
 
         line = line:gsub("(%W)([%l%d][%w_]*)", function (before, part)
           for i,keyword in ipairs(keywords) do
-            if part == keyword
-              or part == "t" then -- uintX_t workaround
+            if part == keyword or part == "t" then -- uintX_t workaround
               return before .. part
             end
           end
@@ -119,6 +142,12 @@ for _,modname in ipairs(modules) do
         line = line:gsub("(%w)%s+([(),*.])", function (a, b) return a .. b end)
 
         proto[#proto + 1] = line
+
+        -- Exclude functions not compatible with Android
+        if funcname and excluded_functions[funcname] then
+          print("Excluding function: " .. funcname)
+          funcname = nil
+        end
 
         if funcname and line then
           file:write(string.format('  { "%s", "%s", &%s },\n', funcname, line, funcname))
