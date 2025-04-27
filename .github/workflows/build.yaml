@@ -19,6 +19,11 @@ jobs:
               with:
                   submodules: recursive
 
+            - name: Install deps
+              run: |
+                  sudo apt update
+                  sudo apt install -y build-essential libx11-dev libgl1-mesa-dev libxi-dev libxrandr-dev libxinerama-dev libxcursor-dev libasound2-dev libopenal-dev libudev-dev libpulse-dev pkg-config libxrandr-dev libglu1-mesa-dev libpulse-dev
+
             - name: Set up JDK
               uses: actions/setup-java@v4
               with:
@@ -47,6 +52,14 @@ jobs:
 
             - name: Make gradlew executable
               run: chmod +x ./gradlew
+
+            - name: Generate raylib-lua binding required files
+              run: |
+                  cd app/src/main/cpp/deps/raylib-lua/
+                  make clean
+                  make PLATFORM=PLATFORM_DESKTOP
+                  cp src/autogen/*.c ../../
+                  cd ../../../../../../
 
             - name: Build debug APK
               run: ./gradlew assembleDebug
