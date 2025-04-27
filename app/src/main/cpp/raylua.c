@@ -33,9 +33,9 @@
 
 #define PHYSAC_IMPLEMENTATION
 #define PHYSACDEF static
-#include <physac.h>
+// #include <physac.h>
 
-#include "autogen/bind.c"
+// #include "bind.c"
 #include "autogen/boot.c"
 
 extern const char *raylua_boot_str;
