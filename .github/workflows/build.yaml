@@ -1,0 +1,61 @@
+name: Build Raymob Lua APK
+
+on:
+    push:
+        branches:
+            - dev
+    pull_request:
+        branches:
+            - dev
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  submodules: recursive
+
+            - name: Set up JDK
+              uses: actions/setup-java@v4
+              with:
+                  java-version: "17"
+                  distribution: "temurin"
+
+            - name: Setup Android SDK
+              uses: android-actions/setup-android@v3
+              with:
+                  cmdline-tools-version: "11076708"
+                  packages: "platforms;android-34 build-tools;34.0.0 ndk;27.2.12479018"
+                  accept-android-sdk-licenses: true
+
+            - name: Verify NDK version
+              run: cat $ANDROID_NDK_HOME/source.properties
+
+            - name: Cache Gradle packages
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
+            - name: Make gradlew executable
+              run: chmod +x ./gradlew
+
+            - name: Build debug APK
+              run: ./gradlew assembleDebug
+              env:
+                  ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
+                  ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+
+            - name: Upload APK
+              uses: actions/upload-artifact@v4
+              with:
+                  name: raymob-lua-debug-apk
+                  path: app/build/outputs/apk/debug/app-debug.apk

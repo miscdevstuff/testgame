@@ -1,59 +1,23 @@
-/*******************************************************************************************
-*
-*   raylib [core] example - Basic window
-*
-*   Welcome to raylib!
-*
-*   To test examples, just press Shift+F10 for Android Studio.
-*
-*   raylib official webpage: www.raylib.com
-*
-*   Enjoy using raylib. :)
-*
-*   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
-*   BSD-like license that allows static linking with closed source software
-*
-*   Copyright (c) 2013-2023 Ramon Santamaria (@raysan5) and reviewed by Victor Le Juez
-*
-********************************************************************************************/
+#include "raymob.h"
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+#include "raylua.h"
 
-#include "raymob.h" // This header can replace 'raylib.h' and includes additional functions related to Android.
-
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
 int main(void)
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    InitWindow(0, 0, "raylib [core] example - basic window");
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-
-        ClearBackground(RAYWHITE);
-
-        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-        EndDrawing();
-        //----------------------------------------------------------------------------------
+    lua_State *L = luaL_newstate();
+    if (L == NULL) {
+        TraceLog(LOG_ERROR, "LUA: Failed to create Lua state");
+        return 1;
     }
-
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
-
+    luaL_openlibs(L);
+    raylua_init(L);
+    if (luaL_dofile(L, "scripts/hello_world.lua") != LUA_OK) {
+        TraceLog(LOG_ERROR, "LUA: Error loading script: %s", lua_tostring(L, -1));
+        lua_close(L);
+        return 1;
+    }
+    lua_close(L);
     return 0;
 }
